@@ -1,10 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+    function setBodyHeightToViewportHeight() {
+        document.body.style.height = window.innerHeight + 'px';
+    }
+    setBodyHeightToViewportHeight();
+    window.addEventListener('resize', setBodyHeightToViewportHeight);
 
     const apiKey = "60845a864801beea747cb04a9eda31d6";
     const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
-    
-    // const units - add option between metric and imperial and then update code to switch the units.
-    
+
     const searchBox = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const weatherIcon = document.getElementById('weatherIcon');
