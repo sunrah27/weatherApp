@@ -1,47 +1,38 @@
+:root {
+    --darkGrey: #202020;
+    --mediumGrey: #292929;
+    --lightGrey: #555;
+    --sizeLarge: 420px;
+    --sizeSmall: 200px;
+}
+
 *{
     margin: 0;
     padding: 0;
     font-family: 'Poppin', sans-serif;
     box-sizing: border-box;
+    box-shadow: #555;
 }
 
 body{
-    background: #222;
-    display: flex;
     height: 100vh;
-    justify-content: center;
-    align-items: center;
+    background-color: var(--mediumGrey);
 }
 
-.card {
-    width: 90%;
-    max-width: 470px;
-    color: #fff;
-    border-radius: 20px;
-    padding: 40px 35px;
-    text-align: center;
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-}
-
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+/* Nav styling */
+nav {
+    height: 100px;
+    padding: 20px 0;
+    background-color: var(--darkGrey);
+    margin-bottom: 20px;
 }
 
 .search{
-    width: 100%;
+    width: 25%;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: auto;
 }
 
 .search input{
@@ -85,39 +76,136 @@ body{
     transform: scale(0.9);
 }
 
-.weatherIcon{
-    width: 170px;
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+/* Board style */
+.board {
+    background: var(--mediumGrey);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--sizeSmall), var(--sizeSmall)));
+    gap: 20px;
+    justify-content: center;
+}
+
+.grid-item {
+    height: var(--sizeSmall);
+    width: var(--sizeSmall);
+}
+
+/* Card style */
+.card {
+    color: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    position: relative;
+    
+}
+
+/* Large card */
+.large {
+    grid-column: span 2;
+    grid-row: span 2;
+    width: 420px;
+    height: 420px
+}
+
+/* Small card */
+.small {
+    height: 200px;
+    width: 200px;
+}
+
+.small .row {
+    flex-direction: column;
+}
+
+.small .dateTime {
+    display: none;
+}
+
+.small img {
+    display: none;
+}
+
+.small .temp h2 {
+    font-size: 50px;
+}
+
+.small .details {
+    display: none;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.settingIcon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.settingIcon img {
+    width: 20px;
+    padding: 2px;
+    border: 1px solid #fff;
+    border-radius: 10px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.col-1 {
+    flex-basis: 100%;
+}
+
+.col-2 {
+    flex-basis: 50%;
+}
+
+.city h2{
+    font-size: 30px;
+    font-weight: 400;
+    margin-top: -10px;
+    text-align: left;
+}
+
+.dateTime {
+    text-align: center;
 }
 
 h2, p {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-#weatherDescription{
-    font-size: 20px;
-    margin-top: -40px;
-
-}
-
 .temp h2{
-    font-size: 80px;
+    font-size: 70px;
     font-weight: 500;
+    text-align: center;
 }
 
 .minMaxFeel {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    justify-content: center;
     text-align: center;
     font-size: 20px;
-}
-
-.city h2{
-    font-size: 45px;
-    font-weight: 400;
-    margin-top: -10px;
 }
 
 #min, #max, #feel{
@@ -138,12 +226,25 @@ h2, p {
     font-size: 15px;
 }
 
+.weatherDes {
+    text-align: center;
+}
+
+.weatherIcon{
+    width: 170px;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+#weatherDescription{
+    font-size: 20px;
+    margin-top: -40px;
+}
+
 .details{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
-    margin-top: 50px;
+    margin: 10px 0;
 }
 
 .col{
@@ -159,6 +260,14 @@ h2, p {
 }
 
 .humidity, .windSpeed{
-    font-size: 28px;
+    font-size: 20px;
     margin-top: -6px;
+}
+
+#min #minTemp {
+    font-size: 15px;
+}
+
+#minTemp {
+    font-size: 20px !important;
 }
