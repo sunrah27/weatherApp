@@ -1,15 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     // console.log(checkWeather('London'));
     createGrid();
-    readLocalStorage();
-    // addEventListeners();
+    createCards();
+    checkGridDropZoneValidity()
 });
 
+// function to create a grid based on the browser size
 function createGrid() {
-    const columns = Math.floor(window.innerWidth / 220);
-    const rows2 = window.innerHeight - 100;
+    const columns = Math.floor(window.innerWidth / 220); // 220 is 200px + 20px gap
+    const rows2 = window.innerHeight - 100; // 100 is the height of nev
     const rows = Math.floor(rows2 / 220);
 
+    //generate grid-item
     const gridContainer = document.getElementById('gridContainer');
     for (let i = 1; i <= rows; i++) {
         for (let j = 1; j <= columns; j++ ) {
@@ -21,6 +23,155 @@ function createGrid() {
     }
 }
 
+// read local browser storage
+function readLocalStorage() {
+    return JSON.parse(localStorage.getItem('cards')) || [];
+};
+
+// function to generate cards based on the local storage
+function createCards() {
+    // Get data from local storage
+    const data = readLocalStorage();
+    if(data.length > 0){
+        data.forEach(cardData => {
+            const card = document.createElement('div');
+            card.classList.add('card', cardData.size);
+            card.setAttribute('draggable', 'true');
+            card.innerHTML = '<h2>Card Title</h2>'; // place holder for weather data
+            document.getElementById(`${cardData.position}`).appendChild(card);
+        });
+    }
+}
+
+// funciton checks every tile and adds or removes drop-zone class
+function checkGridDropZoneValidity() {
+    // check if grid-items.innerHTML = ''; and add class drop-zone 
+    const gridItems = document.getElementsByClassName('grid-items');
+    const data = readLocalStorage();
+
+    // create an awway using the id of grid-items
+    const gridItemsArray = [];
+    for (let i = 0; i < gridItems.length; i++) {
+        const element = gridItems[i];
+        const id = element.id;
+        gridItemsArray.push(id);
+    }
+
+    // remove drop-zone class from card positions
+    const notDropZone = data.map(item => gridItemsNoDrop(item.position, item.size)); // returns an object with array of positions drop-zone was removed
+    const notDropZoneArray = Object.values(notDropZone).flat(); // flatten the object into one array
+
+    // calculate grid-items that should have drop-zone position
+    const dropZoneArray = gridItemsArray.filter(itemA => !notDropZoneArray.includes(itemA));
+    addDropZones(dropZoneArray);
+}
+
+// Function removing drop-zone from card position and returning position of the cards in an array
+function gridItemsNoDrop(pos, size) {
+    const removedElements = [];
+
+    const tileOrigin = document.getElementById(`${pos}`);
+    removedElements.push(`${pos}`);
+    tileOrigin.classList.remove('drop-zone');
+
+    let tileOriginX;
+    let tileOriginY;
+    let tileOriginXY;
+
+    // Convert position from string to X and Y
+    var idStr = pos;
+    var [x, y] = idStr.split('-').map(Number);
+
+    switch (size) {
+        case 'large':
+            tileOriginX = document.getElementById(`${x + 1}-${y}`);
+            removedElements.push(`${x + 1}-${y}`);
+            tileOriginX.classList.remove('drop-zone');
+
+            tileOriginY = document.getElementById(`${x}-${y + 1}`);
+            removedElements.push(`${x}-${y + 1}`);
+            tileOriginY.classList.remove('drop-zone');
+
+            tileOriginXY = document.getElementById(`${x + 1}-${y + 1}`);
+            removedElements.push(`${x + 1}-${y + 1}`);
+            tileOriginXY.classList.remove('drop-zone');
+            break;
+        case 'mediumY':
+            tileOriginX = document.getElementById(`${x + 1}-${y}`);
+            removedElements.push(`${x + 1}-${y}`);
+            tileOriginX.classList.remove('drop-zone');
+            break;
+        case 'mediumX':
+            tileOriginY = document.getElementById(`${x}-${y + 1}`);
+            removedElements.push(`${x}-${y + 1}`);
+            tileOriginY.classList.remove('drop-zone');
+            break;
+        case 'small':
+            break;
+        default:
+            console.error('Card does not have a valid size' + size);
+    }
+
+    return removedElements;
+}
+
+// function to mark the edge of 
+function gridItemNoDropEdge (size) {
+    const columns = Math.floor(window.innerWidth / 220);
+    const rows2 = window.innerHeight - 100;
+    const rows = Math.floor(rows2 / 220);
+
+    switch (size) {
+        case 'large':
+            lastColumn(columns, rows);
+            lastRow(columns, rows);
+            break;
+        case 'mediumY':
+            lastColumn(columns, rows);
+            break;
+        case 'mediumX':
+            lastRow(columns, rows);
+            break;
+        case 'small':
+            break;
+        default:
+            console.error('Could not retrive card size:' + size);
+    }
+
+    function lastColumn(columns, rows) {
+        for (let y = 1; y <= rows; y++ ) {
+            gridItem = document.getElementById(`${columns}-${y}`);
+            gridItem.classList.remove('drop-zone');
+        }
+    }
+    
+    function lastRow(columns, rows) {
+        for (let x = 1; x < columns; x++ ) {
+            gridItem = document.getElementById(`${x}-${rows}`);
+            gridItem.classList.remove('drop-zone');
+        }
+    }
+}
+
+// function adds drop-zone to grid-items
+function addDropZones(positions) {
+    positions.forEach(id => {
+        const element = document.getElementById(id);
+        element.classList.add('drop-zone');
+    })
+}
+
+// need to rewrite this function to handle all drag and drop events.
+function addEventListeners() {  
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('dragstart', (event) => {
+            event.dataTransfer.setData("text/html", event.target.outerHTML);
+        })
+    })
+}
+
+// weather function
 async function checkWeather(city){
     const apiURL = `http://api.weatherapi.com/v1/current.json`;
     const apiKey = `89958791f22a440ba62202448241501`;
@@ -35,6 +186,7 @@ async function checkWeather(city){
     }
 }
 
+// save api data into objects
 function updateWeatherCard(apiData) {
     const city = apiData.location.name;
     const country = apiData.location.country;
@@ -70,99 +222,6 @@ function updateWeatherCard(apiData) {
 //     checkWeather(searchBox.value);
 // });
 
-function readLocalStorage() {
-    const data = JSON.parse(localStorage.getItem('cards')) || [];
-
-    if(data.length > 0){
-        data.forEach(cardData => {
-            createCard(cardData.position, cardData.size);
-        });
-    }
-    checkGridDropZoneValidity(pos, size);
-};
-
-function createCard(pos, size) {
-    const card = document.createElement('div');
-    card.classList.add('card', size);
-    card.setAttribute('draggable', 'true');
-    card.innerHTML = '<h2>Card Title</h2>';
-    document.getElementById(`${pos}`).appendChild(card);
-}
-
-function checkGridDropZoneValidity(pos, size) {
-    // funciton checks every tile and adds or removes drop-zone class
-    // check if grid-items.innerHTML = ''; and add class drop-zone 
-
-    // remove class drop-zone from any card positions
-    gridItemsNoDrop(pos, size);
-}
-
-function gridItemsNoDrop(pos, size) {
-    const tileOrigin = document.getElementById(`${pos}`);
-    let tileOriginX;
-    let tileOriginY;
-    let tileOriginXY;
-    
-    var idStr = pos;
-    var [x, y] = idStr.split('-').map(Number);
-
-    switch (size) {
-        case `large`:
-            tileOrigin.classList.remove('drop-zone');
-            tileOriginX = document.getElementById(`${x+1}-${y}`);
-            tileOriginX.classList.remove('drop-zone');
-            tileOriginY = document.getElementById(`${x}-${y+1}`);
-            tileOriginY.classList.remove('drop-zone');
-            tileOriginXY = document.getElementById(`${x+1}-${y+1}`);
-            tileOriginXY.classList.remove('drop-zone');
-            break;
-        case `mediumY`:
-            tileOrigin.classList.remove('drop-zone');
-            tileOriginX = document.getElementById(`${x+1}-${y}`);
-            tileOriginX.classList.remove('drop-zone');
-            break;
-        case `mediumX`:
-            tileOrigin.classList.remove('drop-zone');
-            tileOriginY = document.getElementById(`${x}-${y+1}`);
-            tileOriginY.classList.remove('drop-zone');
-            break;
-        case `small`:
-            tileOrigin.classList.remove('drop-zone');
-            break;
-        default:
-            console.error('Card does not have a valid size');
-    }
-}
-
-function gridItemNoDropEdge (size) {
-    const columns = Math.floor(window.innerWidth / 220);
-    const rows2 = window.innerHeight - 100;
-    const rows = Math.floor(rows2 / 220);
-
-    let gridItem;
-
-    for (let y = 1; y <= rows; y++ ) {
-        console.log(`${columns}-${y}`);
-        gridItem = document.getElementById(`${columns}-${y}`);
-        gridItem.classList.remove('drop-zone');
-    }
-
-    for (let x = 1; x < columns; x++ ) {
-        console.log(`${x}-${rows}`);
-        gridItem = document.getElementById(`${x}-${rows}`);
-        gridItem.classList.remove('drop-zone');
-    }
-}
-
-function addEventListeners() {  // need to rewrite this function to handle all drag and drop events.
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        card.addEventListener('dragstart', (event) => {
-            event.dataTransfer.setData("text/html", event.target.outerHTML);
-        })
-    })
-}
-
 // dragstart    -> This should be part of the eventListner
 // drag         -> It is fired continuously as the element is dragged. Use it for real-time updates
 // dragenter    -> Triggered when the dragged element enters a valid drop target. This event is often used to provide visual feedback that the drop target is valid.
@@ -170,18 +229,3 @@ function addEventListeners() {  // need to rewrite this function to handle all d
 // dragleave    -> Triggered when the dragged element leaves a valid drop target. This event is often used to remove any visual feedback that was applied during the dragenter event.
 // drop         -> Triggered when the dragged element is dropped on a valid drop target. In this event, you access the transferred data and handle the drop.
 // dragend      -> Triggered when the drag operation is completed (element dropped or cancelled). Cleanup or additional actions can be performed in this event.
-
-// function hideGridItems() {
-//     const gridItems = Array.from(document.getElementsByClassName('grid-items'));
-//     console.log(gridItems);
-//     let tiles = 0;
-//     gridItems.forEach((item) => {
-//         if (item.classList.contains('large')) {
-//             tiles += 3;
-//         } else if (item.classList.contains('mediumX'||'mediumY')) {
-//             tiles += 1;
-//         } else if (item.classList.contains('small')) {
-//             tiles++;
-//         }
-//     })
-// }
