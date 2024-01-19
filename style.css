@@ -90,7 +90,25 @@ nav {
 .grid-items {
     height: var(--sizeSmall);
     width: var(--sizeSmall);
-    background-color: var(--darkGrey);
+}
+
+.grid-items::before {
+    content: "";
+    position: absolute;
+    border-radius: 15px;
+    height: var(--sizeSmall);
+    width: var(--sizeSmall);
+    pointer-events: none;
+}
+
+.valid::before {
+    background-color: var(--lightGrey); 
+    border: 2px dashed #1eff00;
+}
+
+.invalid::before {
+    background-color: var(--darkGrey); 
+    border: 2px dashed red;
 }
 
 .hide {
