@@ -199,7 +199,6 @@ function addDropZones(positions) {
 
 // function to handle drag and drop events
 function handleDragStart(event, card) {
-    console.log('drag started');
     event.dataTransfer.setData("text/html", card.outerHTML);
     const sizeClass = getSizeClass(card.classList);
     gridItemNoDropEdge(sizeClass);
@@ -221,7 +220,7 @@ function preventDefault(event) {
 // Function to handle drop event
 function handleDrop(event) {
     event.preventDefault();
-    const isDropZone = event.target.classList.contains('drop-zone');
+    const isDropZone = event.target.classList.contains('valid');
     if (isDropZone) {
         const draggedCardHTML = event.dataTransfer.getData("text/html");
         const newGridItemId = event.target.id;
@@ -318,9 +317,7 @@ function getSizeClass(cardClassList) {
 
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // weather function
 async function checkWeather(city){
     const apiURL = `http://api.weatherapi.com/v1/current.json`;
