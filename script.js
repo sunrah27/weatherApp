@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     addEventListeners();
 });
 
-
 // function reads local browser storage
 function readLocalStorage() {
     return JSON.parse(localStorage.getItem('cards')) || [];
@@ -25,7 +24,6 @@ function saveCardPosition() {
     })
     localStorage.setItem('cards', JSON.stringify(storeCards));
 }
-
 
 // function to create a grid based on the browser size
 function createGrid() {
@@ -70,7 +68,6 @@ function removeCard(pos) {
     gridItem.innerHTML = '';
     return;
 }
-
 
 // funciton checks every tile and adds or removes drop-zone class
 function checkGridDropZoneValidity() {
@@ -302,22 +299,6 @@ function getSizeClass(cardClassList) {
     return console.error('Card size missing :' + cardClassList);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // weather function
 async function checkWeather(city){
     const apiURL = `http://api.weatherapi.com/v1/current.json`;
@@ -337,28 +318,54 @@ async function checkWeather(city){
 function updateWeatherCard(apiData) {
     const city = apiData.location.name;
     const country = apiData.location.country;
-    const callTime = apiData.location.localtime;
+    const localTime = apiData.location.localtime;
     const updateTime = apiData.current.last_updated;
+
     const temp_c = apiData.current.temp_c;
     const temp_f = apiData.current.temp_f;
-    const windDeg = apiData.current.wind_degree;
+    
     const weatherText = apiData.current.condition.text;
     const weatherIcon = `http:${apiData.current.condition.icon}`;
+    
     const wind_mph = apiData.current.wind_mph;
     const wind_kph = apiData.current.wind_kph;
+    
     const wind_degree = apiData.current.wind_degree;
     const wind_dir = apiData.current.wind_dir;
+
     const pressure_mb = apiData.current.pressure_mb;
     const pressure_in = apiData.current.pressure_in;
+
     const precip_mm = apiData.current.precip_mm;
     const precip_in = apiData.current.precip_in;
-    const humidity = apiData.current.humidity;
-    const cloud = apiData.current.cloud;
+
     const feelslike_c = apiData.current.feelslike_c;
     const feelslike_f = apiData.current.feelslike_f;
+
     const vis_km = apiData.current.vis_km;
     const vis_miles = apiData.current.vis_miles;
-    const uv = apiData.current.uc;
+
     const gust_mph = apiData.current.gust_mph;
     const gust_kph = apiData.current.gust_kph;
+    
+    const humidity = apiData.current.humidity;
+    const cloud = apiData.current.cloud;
+    const uv = apiData.current.uc;
+
+    const searchCard = document.getElementById('searchCard');
+    const searchCardHTML = '';
+
+    searchCardHTML =`
+        <h2>${city},${country}</h2><p>${localTime}</p>
+        <img src="${weatherIcon}" alt="${weatherText}">
+        <p>${weatherText}</p>
+        <p>${temp_c}</p>
+        <div></div><div>${feelslike_c}</div><div></div>
+        <div>${humidity}</div>
+        <div>${wind_mph}</div>
+        <div>${wind_degree}</div>
+    `;
+
+    searchCard.innerHTML = searchCardHTML;
+
 }
