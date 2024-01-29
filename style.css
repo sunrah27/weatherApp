@@ -22,20 +22,20 @@ body {
 /* Nav styling */
 nav {
     height: 100px;
-    padding: 15px 0;
+    padding: 20px 0;
     background-color: var(--darkGrey);
     margin-bottom: 15px;
 }
 
 .search {
-    width: 25%;
-    display: flex;
+    width: 640px;
+    min-width: 200px;
     align-items: center;
-    justify-content: space-between;
     margin: auto;
 }
 
 .search input {
+    width: 100%;
     border: 0;
     outline: 0;
     background: #ebfffc;
@@ -44,36 +44,17 @@ nav {
     height: 60px;
     line-height: 60px;
     border-radius: 30px;
-    flex: 1;
-    margin-right: 16px;
     font-size: 18px;
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
-.search button {
-    border: 0;
-    outline: 0;
-    background: #ebfffc;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    cursor: pointer;
-    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+.search input::placeholder {
+    text-align: center;
 }
 
-.search button img {
-    width: 16px;
-    margin-top: 5px;
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
-    transition: transform 0.1s ease-out;
-}
-
-.search button:hover img {
-    transform: scale(1.1);
-}
-
-.search button:active img {
-    transform: scale(0.9);
+.search input:focus::placeholder {
+    opacity: 0;
 }
 
 /* Grid styling */

@@ -71,7 +71,6 @@ function removeCard(pos) {
 
 // funciton checks every tile and adds or removes drop-zone class
 function checkGridDropZoneValidity() {
-    console.log('running checkGridDropZoneValidity()')
     // check if grid-items.innerHTML = ''; and add class drop-zone 
     const gridItems = document.getElementsByClassName('grid-items');
     const data = readLocalStorage();
@@ -99,7 +98,6 @@ function checkGridDropZoneValidity() {
 // need to rewrite this function to check every tile and apply the relevant styles when dragging card
 // function to check which zones items not valid for card drop
 function gridItemsNoDrop(pos, size) {
-    console.log('running gridItemsNoDrop(pos, size)');
     const removedElements = []; // create an array to store the position of grid-items that had 'drop-zone' class removed
     const tileOrigin = document.getElementById(`${pos}`); // origin tile is the topleft tile the card sits on and is also the cards position
     
@@ -254,11 +252,9 @@ function addEventListeners() {
 
 function styleGridItems(num) {
     if(num == 1) {
-        console.log('adding style class');
         addStyleClass();
     }
     if (num == 0) {
-        console.log('remove style class');
         removeStyleClass();
     }
 }
