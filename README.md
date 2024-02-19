@@ -1,5 +1,5 @@
 # weatherApp v1 
-A weather app using Open Weather API.
+A weather app using Open Weather API. Check it out [here](https://sunrah27.github.io/weatherApp/).
 
 App is built for education purpose. Enter the [city] name or [city, country] to see the current weather for that city.
 
